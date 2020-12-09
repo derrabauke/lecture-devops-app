@@ -6,7 +6,7 @@ Date: 7.12.2020
 ## Personal motivation --> Really?
 - I want to test out interessting technology which might be relevant for me in the future
 - the Cloud Provider should be something else than AWS
-- I might try Travis CI to leverage the Github student pack
+- I might try CircleCI, as it has a good free plan and is on vogue
 - really wanted to test out Kubernetes for a long time
 - BUT: Kubernetes is way to much overhead for this kind of app, only makes sense in multi microservice architecture
 
@@ -23,8 +23,8 @@ Date: 7.12.2020
 
 ```mermaid
 graph TB
-    GH[Github Repo] -->|triggered via hooks|CI[CI via Travis]
-    CI-->CD[CD via Travis]
+    GH[Github Repo] -->|triggered via hooks|CI[CI via CircleCI]
+    CI-->CD[CD via CircleCI]
     CD-->|runs|T[TerraForm]
     subgraph subID["Cloudprovider: Linode | AWS"]
       T-->A("Configuration Management Ansible")
@@ -57,8 +57,8 @@ graph TB
   - the software is managed in a Github Repo
   - CI will be triggered by GitHub Hooks
   
-  ### / CI / CD
-  - I want to test Travis for **CI/CD**
+  ### CI / CD
+  - I want to test ~~Travis~~ CircleCI for **CI/CD**
   - The CI will have also 3 stages: test / build / deploy
   - after successfully building and testing it will trigger the deployment process
   - the deployment will only start on expected git:tags or if the branch equals "master"
