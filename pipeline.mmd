@@ -1,0 +1,15 @@
+graph TB
+    GH[Github Repo] -->|triggered via hooks|CI[CI via CircleCI]
+    CI-->CD[CD via CircleCI]
+    CD-->|runs|T[TerraForm]
+    subgraph subID["Cloudprovider: Linode | AWS"]
+      T-->A("Configuration Management Ansible")
+      A-->C["Docker Containers"]
+      T-->|provisions|C
+      C-->F(Nginx: 81)
+      C-->B(NodeJS: 4001)
+      C-->DB[(MongoDB)]
+    end
+    style subID color:white,fill:#f9ff9,stroke:yellow
+    style B color:black,fill:#f91,stroke:#313,stroke-width:4px
+    style F color:white,fill:#191,stroke:#313,stroke-width:4px
