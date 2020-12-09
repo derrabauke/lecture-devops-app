@@ -21,6 +21,7 @@ Date: 7.12.2020
 - database will be hosted on a separate service (MongoDB Atlas, 200€ Credits via Github Student Pack)
 - frontend and backend run on the same vps and communication will be managed by a reverse proxy configuration
 
+![Pipeline](pipeline.png)
 ```mermaid
 graph TB
     GH[Github Repo] -->|triggered via hooks|CI[CI via CircleCI]
@@ -82,11 +83,11 @@ graph TB
   - alternatively I will provision a MongoDB VPS on AWS
   - seperating the MongoDB from the VPS of the front- & backend gives me more flexebility and the servers (front/back) are absolutley stateless
 
-
+![Infrastructure](infra.png)
 ```mermaid
 graph LR
     R[Request] -->|www|C[Firewall/Loadbalancer]
-    C-->RP
+      C-->RP 
       RP-->F
       RP-->B
       B-->|API|DB
@@ -102,7 +103,7 @@ graph LR
     style subID color:white,fill:#f9ff9,stroke:yellow
     style B color:black,fill:#f91,stroke:#313,stroke-width:4px
     style F color:white,fill:#191,stroke:#313,stroke-width:4px
-```
+``` 
 
 ## Questions and Improvments:
 - The (static files of the) react app is going to get served directly via the reverse proxy. Or is it better to spin up another nginx instance for that?
