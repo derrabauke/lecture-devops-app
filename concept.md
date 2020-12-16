@@ -54,11 +54,12 @@ graph TB
   - if there is a benefitial setup I will use **ansible** for *Configuration Management*
 
   ### VSC
-  - the software is managed in a Github Repo
-  - CI will be triggered by GitHub Hooks
+  - the software is managed in a Gitlab Repo
+  - CI will be triggered by commits onto master or tags
   
   ### CI / CD
   - ~~I want to test CircleCI~~ I will stick with what i kno best for CI/CD: **Gitlab**
+  - hosted by Beuth Hochschule
   - The CI will have also 3 stages: test / build / deploy
   - after successfully building and testing it will trigger the deployment process
   - the deployment will only start on expected git:tags or if the branch equals "master"
@@ -75,12 +76,22 @@ graph TB
   - the reverse proxy will reach trough requests to the API-Url
   - does not include the mongodb
 
+### Testing
+- testing the single parts (front/backend) of the application on the CI Server
+- integration tests on seperate cloud environment ? 
+- TBD
+
   ### MongoDB Peristent Volumen
   - there will be a Persitent Volume (PV) some other pods can claim storage from
   - Perstitent Volume Claims (PVC) will declare their need for memory/cpu, in our case simply 1Gigabyte
   - the setup will consinst of one primary Pod running MongoDB which can replicate data to other secondary volumes
   - I may utilize **portworx** as a block storage layer organiser
   - W.I.P.
+
+### Monitoring
+- I like the look and feel of Prometheus / Grafana
+- Kubernetes has monitoring by itself? Other stuff via Helm?
+- TBD
 
 <!-- ![Infrastructure](infra.png) -->
 ```mermaid
@@ -89,14 +100,14 @@ graph LR
       C-->RP 
       RP-->F
       RP-->B
-      B-->|API|DB1
+      B-->|http|DB1
     
     subgraph subID[replicable VPS]
       RP{Nginx: Reverse Proxy :80 }
       F(Nginx: Frontend React : 81)
       B(NodeJS: Backend : 4001)
     end
-    subgraph PortWorx Volume*
+    subgraph PortWorx Persistent Volumes*
       DB1[(MongoDB Primary)]-->DB2
       DB2[(MongoDB Secondary/Replica)]
     end
