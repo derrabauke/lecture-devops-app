@@ -5,26 +5,24 @@ Date: 7.12.2020
 
 ## Personal motivation --> Really?
 - I want to test out interessting technology which might be relevant for me in the future
-- the Cloud Provider should be something else than AWS
-- I might try CircleCI, as it has a good free plan and is on vogue
+- ~~the Cloud Provider should be something else than AWS~~ for the sake of simplicity I will use the provided AWS account
 - really wanted to test out Kubernetes for a long time
-
 ## Thinking of the stack
 - want to use a cloud native setup
 - the development of the app is assumed to happen on a local machine (dev stage with miniKube)
 - environments will be: dev | test? | production
-- stages will be: build | test | (deploy?) | production
+- stages will be: build | test | deploy
 - app is virtually split into front-end and back-end
 - frontend runs on a *nginx* webserver
 - backend needs a NodeJS server
-- database will run as a seperate persistence cluster/container
+- (database will run as a seperate persistence cluster/container)
 - frontend and backend run on the same vps and communication will be managed by a reverse proxy configuration
 
 <!-- ![Pipeline](pipeline.png) -->
 ```mermaid
 graph TB
-    GH[Github Repo] -->|triggered via hooks|CI[CI via CircleCI]
-    CI-->CD[CD via CircleCI]
+    GH[Gitlab Repo] -->|triggeres conditional pipeline|CI[Gitlab CI]
+    CI-->CD[Gitlab CD]
     CD-->|runs|T[TerraForm]
     subgraph subID["Cloudprovider: Linode | AWS"]
       T-->A("Configuration Management Ansible")
@@ -42,7 +40,7 @@ graph TB
   ### Linode Cloud Plattform
   - starting with the cloud provider, since my provisioning tooling has to support it (otherwise I would end up writing providers)
   - linode seems to have a really cheap solutions with 100€ starter-bonus
-  - furthermore it seems to be battle tested system with better (personal) sympathy than AWS or GCP, next favorable candidate might be GCP, but it depends where I can get a free plan
+  - furthermore it seems to be battle tested system with better (personal) sympathy than AWS or GCP, alternativley AWS since we I have a stundent account already set up
   - very good documentation
   - really good terraform provider
   - server locations in europe/germany
@@ -52,6 +50,12 @@ graph TB
   - it's cloud agnostic, so no vendor lock in etc.
   - terraform is also suitable for setting up a load balancer
   - if there is a benefitial setup I will use **ansible** for *Configuration Management*
+
+  ### Kubernetes
+  - terraform sets up kubernetes
+  - Linode includes a Linode Kuberenetes Engine for managing kubernetes stuff
+  - first node is primary node and manages load
+
 
   ### VSC
   - the software is managed in a Gitlab Repo
@@ -76,10 +80,11 @@ graph TB
   - the reverse proxy will reach trough requests to the API-Url
   - does not include the mongodb
 
-### Testing
-- testing the single parts (front/backend) of the application on the CI Server
-- integration tests on seperate cloud environment ? 
-- TBD
+  ### Testing
+  - testing the single parts (front/backend) of the application on the CI Server
+  - integration test with local setup via makefile ?
+  - integration tests on seperate cloud environment "staging" ?? 
+  - TBD
 
   ### MongoDB Peristent Volumen
   - there will be a Persitent Volume (PV) some other pods can claim storage from
@@ -88,10 +93,10 @@ graph TB
   - I may utilize **portworx** as a block storage layer organiser
   - W.I.P.
 
-### Monitoring
-- I like the look and feel of Prometheus / Grafana
-- Kubernetes has monitoring by itself? Other stuff via Helm?
-- TBD
+  ### Monitoring
+  - I like the look and feel of Prometheus / Grafana
+  - Kubernetes has monitoring by itself? Other stuff via Helm?
+  - TBD
 
 <!-- ![Infrastructure](infra.png) -->
 ```mermaid
@@ -104,7 +109,7 @@ graph LR
     
     subgraph subID[replicable VPS]
       RP{Nginx: Reverse Proxy :80 }
-      F(Nginx: Frontend React : 81)
+      F(Serve React Frontend)
       B(NodeJS: Backend : 4001)
     end
     subgraph PortWorx Persistent Volumes*
@@ -119,3 +124,10 @@ graph LR
 ## Questions and Improvments:
 - The (static files of the) react app is going to get served directly via the reverse proxy. Or is it better to spin up another nginx instance for that?
 - Is is legit to use cloud provider specific kubernertes utilities? (like Linode Kubernetes Engine)
+- What exactly does this requirement mean? 
+> when deploying a new version, the app must continue to be reachable; this depends on the deployment strategy that has been chosen 
+
+
+- service resource (nxing ingress), keine Trennung von Front-End und Backend nötig
+- db persistence is not necessary for the project
+- minikube mit virtual box
